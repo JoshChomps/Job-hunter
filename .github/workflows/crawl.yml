@@ -1,0 +1,64 @@
+name: Crawl jobs
+
+# Weekly to start. Flipping to daily is a one-line change here, GitHub Actions
+# has no cron frequency cap, unlike Vercel's Hobby plan which allows only one
+# run per day and would time out on a multi-source crawl anyway.
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Ignore cadence and run every enabled source"
+        type: boolean
+        default: false
+      provider:
+        description: "Run a single provider (e.g. reed, adzuna)"
+        type: string
+        required: false
+      enrich:
+        description: "How many jobs to enrich with Claude afterwards"
+        type: string
+        default: "50"
+
+concurrency:
+  group: crawl
+  cancel-in-progress: false
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    # Tier 1-3 only. Tier 4 (LinkedIn/Indeed/Glassdoor) cannot run here
+    # Actions runners use datacentre IPs, which those sites block on sight.
+    # Run those locally with: pnpm crawl --tier=4
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Run crawl
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          REED_API_KEY: ${{ secrets.REED_API_KEY }}
+          JOOBLE_API_KEY: ${{ secrets.JOOBLE_API_KEY }}
+          CAREERJET_AFFID: ${{ secrets.CAREERJET_AFFID }}
+        run: |
+          pnpm crawl \
+            ${{ inputs.force && '--force' || '' }} \
+            ${{ inputs.provider && format('--provider={0}', inputs.provider) || '' }} \
+            --enrich=${{ inputs.enrich || '50' }}

@@ -1,0 +1,23 @@
+node_modules/
+.next/
+out/
+build/
+.env
+.env.local
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+.vercel
+data/uk-sponsors.csv
+.env*
+
+# Local-only files: AI tool configs, interview notes, secrets, editor locks
+CLAUDE.md
+AGENTS.md
+.claude/
+PROF_QA.md
+HANDOFF*.md
+.env
+*.lck
+config/profile.md

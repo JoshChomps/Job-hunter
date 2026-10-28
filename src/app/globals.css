@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+/*
+ * Deep forest ground with a violet accent. Green stays calm behind dense
+ * tables; violet is reserved for the few things you actually click.
+ *
+ * Light mode keeps the same relationship, a green-tinted paper ground with a
+ * darker violet, since the bright violet that reads well on near-black fails
+ * contrast on white.
+ */
+
+:root {
+  --bg: #f4f8f5;
+  --surface: #ffffff;
+  --surface-2: #eaf1ec;
+  --border: #d3e2d8;
+  --text: #0d1f16;
+  --text-muted: #5a7365;
+
+  --primary: #6d28d9;
+  --primary-hi: #5b21b6;
+  --primary-fg: #ffffff;
+  --primary-soft: #ede9fe;
+
+  --stage-inbox: #7c3aed;
+  --stage-shortlist: #9061f9;
+  --stage-applied: #b45309;
+  --stage-interview: #0f766e;
+  --stage-offer: #047857;
+  --stage-rejected: #b91c1c;
+  --stage-archived: #6b7280;
+
+  --warning: #b45309;
+  --danger: #b91c1c;
+  --success: #047857;
+}
+
+.dark {
+  --bg: #0a1410;
+  --surface: #0f1c17;
+  --surface-2: #14241d;
+  --border: #1e3329;
+  --text: #e6f0ea;
+  --text-muted: #8fa89b;
+
+  --primary: #8b5cf6;
+  --primary-hi: #a78bfa;
+  --primary-fg: #ffffff;
+  --primary-soft: #1e1b3a;
+
+  --stage-inbox: #a78bfa;
+  --stage-shortlist: #c4b5fd;
+  --stage-applied: #f59e0b;
+  --stage-interview: #2dd4bf;
+  --stage-offer: #34d399;
+  --stage-rejected: #f87171;
+  --stage-archived: #6b7280;
+
+  --warning: #f59e0b;
+  --danger: #f87171;
+  --success: #34d399;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-primary: var(--primary);
+  --color-primary-hi: var(--primary-hi);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-soft: var(--primary-soft);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--primary-hi);
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--primary-fg);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Wide tables scroll inside their own container rather than the page body. */
+.scroll-x {
+  overflow-x: auto;
+}
