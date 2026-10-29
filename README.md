@@ -32,7 +32,7 @@ Private by design: the owner plus a handful of invited contributors.
 | App | Next.js 16 + TypeScript on Vercel |
 | Database | Neon Postgres + Drizzle |
 | Auth | Auth.js, Google sign-in + email allowlist |
-| Ingestion | GitHub Actions cron, weekly, then daily |
+| Ingestion | `pnpm crawl`, on whatever schedule you run it |
 | Scraping | Firecrawl: link parsing, career pages, Workday |
 | Enrichment | Claude, a local model via Ollama, or both, see [docs/LLM.md](docs/LLM.md) |
 
@@ -91,8 +91,7 @@ pnpm sponsors:import -- --url="https://www.gov.uk/csv-preview/.../SP_...csv"
 ```
 
 This also re-resolves every company and recomputes the UK gate, so a newly
-licensed employer stops being hidden without waiting for a re-crawl. There's a
-`workflow_dispatch` GitHub Action for the same thing.
+licensed employer stops being hidden without waiting for a re-crawl.
 
 ### 5. First crawl
 
@@ -135,18 +134,16 @@ looks like missing data, not an error.
 **→ [Full deployment guide](docs/DEPLOY.md)**
 
 Secrets never go in the repo, not even a private one. Vercel stores them in its
-own project settings and injects them at build and runtime; GitHub Actions reads
-its own repository secrets. `.env.example` documents the shape with empty
+own project settings and injects them at build and runtime. `.env.example` documents the shape with empty
 values, which is the only env file that gets committed.
 
 Short version: import the repo in Vercel and set the environment variables
-there, add the same crawler keys as GitHub Actions repository secrets, run
+there, run
 `pnpm db:migrate` from your machine, and add the production redirect URI to your
 Google OAuth client.
 
-The crawl runs Mondays at 06:00 UTC. Change the cron in
-`.github/workflows/crawl.yml` to go daily, GitHub Actions has no frequency cap,
-which is why the schedule lives there rather than in Vercel cron.
+Schedule `pnpm crawl` yourself (cron, Task Scheduler, or any CI runner with the
+crawler keys set as secrets). Vercel's Hobby cron allows only one run a day.
 
 ## The Tier 4 problem
 
